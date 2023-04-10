@@ -8,80 +8,210 @@ namespace Batalla_naval
 {
     internal class Program
     {
+        
         static void Main(string[] args)
+             
         {
-            Console.WriteLine("Bienvenido a Batalla naval." );
-            Console.WriteLine("Usted va a marcar la posición inicial de su barco");
+            const string seaCharacter = "~ ";
+            const string boatCell = "Y ";
+            const string wrongLocation = "X";
+            const string correctLocation = "0";
 
-            // PEDIR DIRECCIÓN 
+            // SOLICITUD DE DATOS
 
-            string dir = "";
-            int direction = 0;
-            Console.WriteLine("¿En qué dirección va a ubicar su barco? Escriba 1 para horizontal o escriba 2 para vertical");
-            dir = Console.ReadLine();
-            direction = Convert.ToInt32( dir );
+            Console.WriteLine("Ingrese la posición del barco Vertical=1 Horizontal=0");
+            int direction = Int32.Parse(Console.ReadLine());
 
-            if (direction == 1)
+            while (direction != 0 && direction != 1)
             {
-                Console.WriteLine("la dirección de su barco será horizontal");
-            }
-            else if (direction == 2)
-            {
-                Console.WriteLine("la dirección de su barco será vertical");
-            }
-            else
-            {
-                Console.WriteLine("El valor ingresado no es válido");
+                Console.WriteLine("La información ingresada no es correcta. Por favor ingrese 0 para Horizontal o 1 para Vertical");
+                direction = Int32.Parse(Console.ReadLine());
             }
 
+            Console.WriteLine("Ingrese la longitud del barco (Debe ser menor o igual a 9)");
+            int longitud = Int32.Parse(Console.ReadLine());
 
-            //PEDIR LONGITUD
-
-            Console.WriteLine("¿Cuál será la longitud de su barco? Ingrese un número entre el 1 y el 10");
-            int tamano = int.Parse(Console.ReadLine());
-            if ( 0 < tamano )
+            while (longitud < 0 || longitud > 9)
             {
-                if (tamano < 10)
+                Console.WriteLine("La información ingresada no es correcta, por favor ingrese un numero de 0 al 9");
+                longitud = Int32.Parse(Console.ReadLine());
+            }
+
+            Console.WriteLine("Ingrese donde se ubica el punto inicial del barco de forma x,y:");
+            string coordenada = Console.ReadLine();
+            string[] coordenadaFinal = coordenada.Split(',');
+
+            int coor1;
+            int coor2;
+
+            while (coordenadaFinal.Length == 1 || int.TryParse(coordenadaFinal[0], out coor1) == false || int.TryParse(coordenadaFinal[1], out coor2) == false)
+            {
+                Console.WriteLine("Las coordenadas ingresadas son incorrectas. Ingrese la información de la forma (x,y)");
+                coordenada = Console.ReadLine();
+                coordenadaFinal = coordenada.Split(',');
+            }
+
+            Console.WriteLine(coordenadaFinal[0]);
+            Console.WriteLine(coordenadaFinal[1]);
+
+            //TABLERO
+
+            string[,] map = new string[10, 10];
+
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
                 {
-                    Console.WriteLine("El tamaño de su barco será: " + tamano);
-                } else
-                {
-                    Console.WriteLine("El tamaño no es válido");
+
+                    map[i, j] = seaCharacter;
+                    Console.Write(map[i, j] + " ");
                 }
-                
-            }
-            else
-            {
-                Console.WriteLine("El tamaño no es válido");
+                Console.WriteLine();
             }
 
-            //PEDIR COORDENADA DEL BARCO INICIAL 
+        //VALIDAR
 
-            Console.WriteLine("¿Dónde empezará el barco? Ingrese la coordenada de la siguiente forma -> x,y: ");
-            string coord = Console.ReadLine();
-            string[] coords = coord.Split(',');
+        string[] coor5 = new string[longitud];
+        
 
-            Console.WriteLine(coords[0]);
-            Console.WriteLine(coords[1]);
-
-            int[,] multiDimensionalArray1 = new int[2, 3];
-
-            //Declare and set array element values
-            int[,] multiDimensionalArray2 = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-
-            var rows = multiDimensionalArray2.GetLength(0);
-            var columns = multiDimensionalArray2.GetLength(0);
-
-            for (int i = 0; i < rows; i++)
+        if (direction == 0)
+        {
+            for (int a = 0; a < longitud; a++)
             {
-                for (int j = 0; j < columns; j++)
+                coor5[a] = coordenadaFinal[0] + "," + coor2;
+                coor2++;
+            }
+
+}
+        else
+{
+    for (int a = 0; a < longitud; a++)
+    {
+        coor5[a] = coor1 + "," + coordenadaFinal[1];
+        coor1++;
+    }
+
+}
+
+        //LIMPIADOR
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.DarkBlue;
+
+        int shot = 0;
+        int fail = 0;
+        string valid = "";
+
+do
+{
+    Console.WriteLine("¿En dónde cree que estará el barco? Ingrese las coordenadas de la forma x,y");
+    string PlayerCoor = Console.ReadLine();
+    string[] atack = PlayerCoor.Split(',');
+
+    int coor3;
+    int coor4;
+
+    while (PlayerCoor.Length == 1 || int.TryParse(atack[0], out coor3) == false || int.TryParse(atack[1], out coor4) == false || PlayerCoor == valid)
+    {
+        Console.WriteLine("Las coordenadas ingresadas son incorrectas. Ingrese la informacion de la siguiente forma (x,y)");
+        PlayerCoor = Console.ReadLine();
+        atack = PlayerCoor.Split(',');
+
+    }
+
+    if (coor5.Contains(PlayerCoor))
+    {
+        valid = PlayerCoor;
+        shot++;
+        for (int i = 0; i < 10; i++)
+        {
+
+            for (int j = 0; j < 10; j++)
+            {
+
+                if (map[i, j] == correctLocation || map[i, j] == wrongLocation)
                 {
-                    Console.WriteLine($"The number in the position [{i}][{j}] is {multiDimensionalArray2[i, j]}");
+                   map[i, j] = map[i, j];
+                }
+                else if (i == coor3 && j == coor4)
+                {
+                    map[i, j] = correctLocation;
+                }
+                else
+                {
+                    map[i, j] = seaCharacter;
                 }
 
+                Console.Write(map[i, j] + " ");
+
             }
 
+            Console.WriteLine();
+        }
+    }
+    else
+    {
+        valid = PlayerCoor;
+        fail++;
+        for (int i = 0; i < 10; i++)
+        {
 
+            for (int j = 0; j < 10; j++)
+            {
+                if (map[i, j] == correctLocation || map[i, j] == wrongLocation)
+                {
+                    map[i, j] = map[i, j];
+                }
+                else if (i == coor3 && j == coor4)
+                {
+                    map[i, j] = wrongLocation;
+                }
+                else
+                {
+                    map[i, j] = seaCharacter;
+                }
+
+                Console.Write(map[i, j] + " ");
+
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+        Console.WriteLine("Intentos Correctos: " + shot);
+        Console.WriteLine("Intentos Fallidos: " + fail);
+
+        if (shot == longitud)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+
+                for (int j = 0; j < 10; j++)
+                {
+
+                    if (map[i, j] == correctLocation)
+                    {
+                        map[i, j] = boatCell;
+                    }
+                    else if (map[i, j] == wrongLocation)
+                    {
+                        map[i, j] = wrongLocation;
+                    }
+                    else
+                    {
+                        map[i, j] = seaCharacter;
+                    }
+
+                    Console.Write(map[i, j] + " ");
+
+                }
+
+                Console.WriteLine();
+            }
+            Console.WriteLine("¡Vuelve a jugar pronto!");
+        }
+
+        } while (shot != longitud);
 
         }
     }
